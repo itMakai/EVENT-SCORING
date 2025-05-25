@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Judge Management</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Panel - Add Judge</h1>
+        <form id="judgeForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="display_name">Display Name</label>
+                <input type="text" id="display_name" name="display_name" required>
+            </div>
+            <button type="submit">Add Judge</button>
+        </form>
+        <div id="message" class="message"></div>
+        <h1>Existing Judges</h1>
+        <table id="judgeTable">
+            <tr>
+                <th>Username</th>
+                <th>Display Name</th>
+            </tr>
+        </table>
+    </div>
+    <script>
+        const backendUrl = 'http://localhost/event-scoring/backend';
+        document.getElementById('judgeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const display_name = document.getElementById('display_name').value;
+            const messageDiv = document.getElementById('message');
+            try {
+                const response = await fetch(`${backendUrl}/src/judges.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `username=${encodeURIComponent(username)}&display_name=${encodeURIComponent(display_name)}`
+                });
+                const result = await response.json();
+                messageDiv.textContent = result.message;
+                messageDiv.className = `message ${result.success ? 'success' : 'error'}`;
+                if (result.success) fetchJudges();
+            } catch (err) {
+                messageDiv.textContent = 'Error: ' + err.message;
+                messageDiv.className = 'message error';
+            }
+        });
+
+        async function fetchJudges() {
+            try {
+                const response = await fetch(`${backendUrl}/src/judges.php`);
+                const judges = await response.json();
+                const table = document.getElementById('judgeTable');
+                table.innerHTML = '<tr><th>Username</th><th>Display Name</th></tr>';
+                judges.forEach(judge => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${judge.username}</td><td>${judge.display_name}</td>`;
+                    table.appendChild(row);
+                });
+            } catch (err) {
+                console.error('Error fetching judges:', err);
+            }
+        }
+        fetchJudges();
+    </script>
+</body>
+</html>

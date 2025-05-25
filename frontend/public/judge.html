@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judge Portal - Scoring</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Judge Portal - Assign Scores</h1>
+        <form id="scoreForm">
+            <div class="form-group">
+                <label for="judge_id">Judge</label>
+                <select id="judge_id" name="judge_id" required>
+                    <option value="">Select Judge</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="user_id">User</label>
+                <select id="user_id" name="user_id" required>
+                    <option value="">Select User</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="score">Score (1-100)</label>
+                <input type="number" id="score" name="score" min="1" max="100" required>
+            </div>
+            <button type="submit">Submit Score</button>
+        </form>
+        <div id="message" class="message"></div>
+    </div>
+    <script>
+        const backendUrl = 'http://127.0.0.1/event-scoring/backend'; 
+        async function loadJudges() {
+            const response = await fetch(`${backendUrl}/src/judges.php`);
+            const judges = await response.json();
+            const select = document.getElementById('judge_id');
+            judges.forEach(judge => {
+                const option = document.createElement('option');
+                option.value = judge.id;
+                option.textContent = judge.display_name;
+                select.appendChild(option);
+            });
+        }
+        async function loadUsers() {
+            const response = await fetch(`${backendUrl}/src/users.php`);
+            const users = await response.json();
+            const select = document.getElementById('user_id');
+            users.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.id;
+                option.textContent = user.display_name;
+                select.appendChild(option);
+            });
+        }
+        document.getElementById('scoreForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const judge_id = document.getElementById('judge_id').value;
+            const user_id = document.getElementById('user_id').value;
+            const score = document.getElementById('score').value;
+            const messageDiv = document.getElementById('message');
+            try {
+                const response = await fetch(`${backendUrl}/src/scores.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `judge_id=${judge_id}&user_id=${user_id}&score=${score}`
+                });
+                const result = await response.json();
+                messageDiv.textContent = result.message;
+                messageDiv.className = `message ${result.success ? 'success' : 'error'}`;
+            } catch (err) {
+                messageDiv.textContent = 'Error: ' + err.message;
+                messageDiv.className = 'message error';
+            }
+        });
+        loadJudges();
+        loadUsers();
+    </script>
+</body>
+</html>

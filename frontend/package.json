@@ -1,0 +1,8 @@
+{
+    "name": "event-scoring",
+    "version": "1.0.0",
+    "description": "Event scoring system frontend",
+    "scripts": {
+        "start": "vercel dev"
+    }
+}
