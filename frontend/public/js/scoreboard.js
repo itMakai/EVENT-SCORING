@@ -1,5 +1,5 @@
 function refreshScoreboard() {
-    const backendUrl = 'http://127.0.0.1/event-scoring/backend';
+    const backendUrl = 'https://scoreboard.infy.uk/backend';
     fetch(`${backendUrl}/api/scoreboard.php`)
         .then(response => {
             if (!response.ok) {

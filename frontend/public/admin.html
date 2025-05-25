@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="admin.html">Admin Panel</a></li>
+            <li><a href="judge.html">Judge Portal</a></li>
+            <li><a href="scoreboard.html">Scoreboard</a></li>
+        </ul>
+    </nav>
     <div class="container">
         <h1>Admin Panel - Add Judge</h1>
         <form id="judgeForm">
@@ -30,7 +38,7 @@
         </table>
     </div>
     <script>
-        const backendUrl = 'http://localhost/event-scoring/backend';
+        const backendUrl = 'https://scoreboard.infy.uk/backend';
         document.getElementById('judgeForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('username').value;

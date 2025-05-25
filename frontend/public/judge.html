@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="admin.html">Admin Panel</a></li>
+            <li><a href="judge.html">Judge Portal</a></li>
+            <li><a href="scoreboard.html">Scoreboard</a></li>
+        </ul>
+    </nav>
     <div class="container">
         <h1>Judge Portal - Assign Scores</h1>
         <form id="scoreForm">
@@ -31,7 +39,7 @@
         <div id="message" class="message"></div>
     </div>
     <script>
-        const backendUrl = 'http://127.0.0.1/event-scoring/backend'; 
+        const backendUrl = 'https://scoreboard.infy.uk/backend';
         async function loadJudges() {
             const response = await fetch(`${backendUrl}/src/judges.php`);
             const judges = await response.json();
