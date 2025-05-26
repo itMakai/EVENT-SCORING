@@ -3,10 +3,21 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, GET");
+// Handle CORS
+$allowedOrigins = ['https://eventscoringboard.vercel.app', 'http://localhost:3000'];
+if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowedOrigins)) {
+    header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
+}
+
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header('Content-Type: application/json');
+
+// Handle preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 require_once __DIR__ . '/../src/db.php';
 
@@ -60,9 +71,18 @@ function getScoreboard() {
 
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $judge_id = $_POST['judge_id'] ?? '';
-        $user_id = $_POST['user_id'] ?? '';
-        $score = $_POST['score'] ?? '';
+        // Support both JSON and form data
+        $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+        if (strpos($contentType, 'application/json') !== false) {
+            $input = json_decode(file_get_contents('php://input'), true);
+            $judge_id = $input['judge_id'] ?? '';
+            $user_id = $input['user_id'] ?? '';
+            $score = $input['score'] ?? '';
+        } else {
+            $judge_id = $_POST['judge_id'] ?? '';
+            $user_id = $_POST['user_id'] ?? '';
+            $score = $_POST['score'] ?? '';
+        }
         echo json_encode(submitScore($judge_id, $user_id, $score));
     } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
         echo json_encode(getScoreboard());

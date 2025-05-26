@@ -1,9 +1,9 @@
 <?php
 function getDBConnection() {
-    $host = '127.0.0.1';
-    $dbname = 'event_scoring';
-    $username = 'event_user'; 
-    $password = 'secure_password'; 
+    $host = 'sql100.infinityfree.com';
+    $dbname = 'if0_39077321_event_scoring';
+    $username = 'if0_39077321'; 
+    $password = 'Danmak6857'; 
     
     try {
         $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);

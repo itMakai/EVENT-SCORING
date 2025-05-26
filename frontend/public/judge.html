@@ -40,28 +40,48 @@
     </div>
     <script>
         const backendUrl = 'https://scoreboard.infy.uk/backend';
+
+        // Load judges from the backend
         async function loadJudges() {
-            const response = await fetch(`${backendUrl}/src/judges.php`);
-            const judges = await response.json();
-            const select = document.getElementById('judge_id');
-            judges.forEach(judge => {
-                const option = document.createElement('option');
-                option.value = judge.id;
-                option.textContent = judge.display_name;
-                select.appendChild(option);
-            });
+            try {
+                const response = await fetch(`${backendUrl}/src/judges.php`);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch judges: ${response.status}`);
+                }
+                const judges = await response.json();
+                const select = document.getElementById('judge_id');
+                judges.forEach(judge => {
+                    const option = document.createElement('option');
+                    option.value = judge.id;
+                    option.textContent = judge.display_name;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading judges:', error);
+            }
         }
+
+        // Load users from the backend
         async function loadUsers() {
-            const response = await fetch(`${backendUrl}/src/users.php`);
-            const users = await response.json();
-            const select = document.getElementById('user_id');
-            users.forEach(user => {
-                const option = document.createElement('option');
-                option.value = user.id;
-                option.textContent = user.display_name;
-                select.appendChild(option);
-            });
+            try {
+                const response = await fetch(`${backendUrl}/src/users.php`);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch users: ${response.status}`);
+                }
+                const users = await response.json();
+                const select = document.getElementById('user_id');
+                users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.id;
+                    option.textContent = user.display_name;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
         }
+
+        // Handle form submission
         document.getElementById('scoreForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const judge_id = document.getElementById('judge_id').value;
@@ -74,14 +94,20 @@
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: `judge_id=${judge_id}&user_id=${user_id}&score=${score}`
                 });
+                if (!response.ok) {
+                    throw new Error(`Failed to submit score: ${response.status}`);
+                }
                 const result = await response.json();
                 messageDiv.textContent = result.message;
                 messageDiv.className = `message ${result.success ? 'success' : 'error'}`;
             } catch (err) {
+                console.error('Error submitting score:', err);
                 messageDiv.textContent = 'Error: ' + err.message;
                 messageDiv.className = 'message error';
             }
         });
+
+        // Load judges and users on page load
         loadJudges();
         loadUsers();
     </script>

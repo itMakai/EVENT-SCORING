@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS event_scoring;
-USE event_scoring;
-
 CREATE TABLE judges (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -23,7 +20,6 @@ CREATE TABLE scores (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
---  sample users for demo
 INSERT INTO users (username, display_name) VALUES
 ('user1', 'Alice Smith'),
 ('user2', 'Bob Johnson'),

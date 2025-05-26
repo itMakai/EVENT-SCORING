@@ -1,7 +1,6 @@
 <?php
 // This script retrieves a list of users from the database and returns it as a JSON response.
-
-header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Origin: https://eventscoringboard.vercel.app");
 header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: Content-Type");
 header('Content-Type: application/json');
